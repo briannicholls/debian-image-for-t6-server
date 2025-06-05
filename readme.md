@@ -1,7 +1,10 @@
-# 🛠️ Docker T6Server Setup for Plutonium (Manual Launch Style)
+# 🐧 Docker T6Server Setup for Plutonium (Manual Launch Style)
 
-## ✅ One-time: Create the container from your working image
-**Only run this if you're starting fresh.**
+This guide provides an easy way to run [Sterbweise's T6Server installer](https://github.com/Sterbweise/T6Server) inside a clean Debian-based Docker container.
+---
+
+## 🧱 One-time: Create the container
+Run this if you're starting from scratch:
 
 ```bash
 docker run -it --name my-t6server \
@@ -11,9 +14,12 @@ docker run -it --name my-t6server \
   t6server-working
 ```
 
+> ✅ `--network host` is required so the server appears on Plutonium’s master list.
+> ✅ Forward UDP port 4976 from your router to your Docker host.
+
 ---
 
-## 🔄 Start the container (once created)
+## ▶️ Start the container
 
 ```bash
 docker start -ai my-t6server
@@ -21,37 +27,31 @@ docker start -ai my-t6server
 
 ---
 
-## 🧭 Inside the container
+## 📦 Inside the container: Run Sterbweise’s T6Server Installer
 
-### 🧱 One-time setup (if needed)
+These steps are for installing T6Server from scratch inside the container. Only needed the first time.
 
 ```bash
 cd /opt/T6Server
 sudo ./install.sh
 ```
 
-### ⚙️ Configure the server
+Then configure your server:
 
 ```bash
 cd /opt/T6Server/Plutonium
 nano T6Server.sh
 ```
 
-Edit the following lines:
+Update:
+- `SERVER_NAME` (display name in server browser)
+- `SERVER_KEY` (from your Plutonium account)
 
-```bash
-readonly SERVER_NAME="My Server Name"
-readonly GAME_PATH="/opt/T6Server/Game"
-readonly SERVER_KEY="your_key_here"
-readonly SERVER_PORT=4976
-readonly CONFIG_FILE="dedicated.cfg"
-```
-
-Make sure `/opt/T6Server/Game/dedicated.cfg` exists and is valid.
+All other defaults are already correct for this Docker image. `dedicated.cfg` will be created automatically.
 
 ---
 
-## 🚀 To launch the server manually
+## 🚀 Launch the server manually
 
 ```bash
 cd /opt/T6Server/Plutonium
@@ -60,11 +60,26 @@ cd /opt/T6Server/Plutonium
 
 ---
 
-## 💾 To restore from a committed image later (if needed)
+## 🔁 Committed image and persistence
+
+All changes made inside the container will persist as long as you:
+- Continue using `docker start -ai my-t6server`
+- Mount your game files from the host (as shown above)
+
+You do **not** need to commit new images unless you want to back up or duplicate your setup.
+
+If you want to snapshot your current state:
 
 ```bash
-docker run -it --name my-t6server-restored \
+docker commit my-t6server t6server-backup
+```
+
+Then later:
+
+```bash
+docker run -it --name my-t6server-restore \
   --network host \
   --cap-add=SYS_ADMIN --privileged \
   -v "/home/bfive/t6server/plutonium/Call of Duty Black Ops II":/opt/T6Server/Game \
-  t6server-working
+  t6server-backup
+```
