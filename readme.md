@@ -14,7 +14,6 @@ docker run -it --name my-t6server \
   t6server-working
 ```
 
-> ✅ `--network host` is required so the server appears on Plutonium’s master list.
 > ✅ Forward UDP port 4976 from your router to your Docker host.
 
 ---
