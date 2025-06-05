@@ -2,27 +2,27 @@
 
 This guide provides an easy way to run [Sterbweise's T6Server installer](https://github.com/Sterbweise/T6Server) inside a clean Debian-based Docker container.
 
+
 ---
 
-## 🛠️ Build the Docker Image
+## 🛠️ Clone the Repo and Build the Docker Image
 
-This setup uses a custom Docker image built from two files in this repo:
+First, clone this repo:
 
-- `Dockerfile` – defines the Debian environment and installs Wine + dependencies
-- `entrypoint.sh` – sets up the container environment on boot
+```bash
+git clone https://github.com/briannicholls/debian-image-for-t6-server.git
+cd debian-image-for-t6-server
+```
 
-From the root of the repo, build the image:
+Build the Docker image:
 
 ```bash
 docker build -t t6server .
 ```
 
-> 📝 Make sure both `Dockerfile` and `entrypoint.sh` are in the same directory when you run this command.
-
 ---
 
-## 🧱 One-time: Create the container
-Run this if you're starting from scratch:
+## 🧱 One-time: Create the container:
 
 ```bash
 docker run -it --name my-t6server \
@@ -31,9 +31,6 @@ docker run -it --name my-t6server \
   -v "/home/bfive/t6server/plutonium/Call of Duty Black Ops II":/opt/T6Server/Game \
   t6server
 ```
-
-> ✅ `--network host` is required so the server appears on Plutonium’s master list.
-> ✅ Forward UDP port 4976 from your router to your Docker host.
 
 ---
 
@@ -45,9 +42,12 @@ docker start -ai my-t6server
 
 ---
 
-## 📦 Inside the container: Run Sterbweise’s T6Server Installer
+## That's it!
 
-These steps are for installing T6Server from scratch inside the container. Only needed the first time.
+Now you have a clean Debian environment to run [Sterbweise's T6Server installer](https://github.com/Sterbweise/T6Server)
+I've included some installation docs below.
+
+## 📦 Inside the container: Run Sterbweise’s T6Server Installer
 
 ```bash
 cd /opt/T6Server
@@ -76,7 +76,10 @@ cd /opt/T6Server/Plutonium
 ./T6Server.sh
 ```
 
+If your ports are forwarded, you should see your server pop up in Plutonium's server list. It may take some time, for me it was about five minutes the first time.
+
 ---
+
 
 ## 🔁 Committed image and persistence
 
