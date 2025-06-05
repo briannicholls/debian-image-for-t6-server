@@ -1,6 +1,24 @@
 # 🐧 Docker T6Server Setup for Plutonium (Manual Launch Style)
 
 This guide provides an easy way to run [Sterbweise's T6Server installer](https://github.com/Sterbweise/T6Server) inside a clean Debian-based Docker container.
+
+---
+
+## 🛠️ Build the Docker Image
+
+This setup uses a custom Docker image built from two files in this repo:
+
+- `Dockerfile` – defines the Debian environment and installs Wine + dependencies
+- `entrypoint.sh` – sets up the container environment on boot
+
+From the root of the repo, build the image:
+
+```bash
+docker build -t t6server .
+```
+
+> 📝 Make sure both `Dockerfile` and `entrypoint.sh` are in the same directory when you run this command.
+
 ---
 
 ## 🧱 One-time: Create the container
@@ -11,9 +29,10 @@ docker run -it --name my-t6server \
   --network host \
   --cap-add=SYS_ADMIN --privileged \
   -v "/home/bfive/t6server/plutonium/Call of Duty Black Ops II":/opt/T6Server/Game \
-  t6server-working
+  t6server
 ```
 
+> ✅ `--network host` is required so the server appears on Plutonium’s master list.
 > ✅ Forward UDP port 4976 from your router to your Docker host.
 
 ---
